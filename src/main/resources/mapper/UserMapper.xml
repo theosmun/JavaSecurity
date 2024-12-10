@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.javasecurity.api.app.mapper.UserMapper">
+    <select id="getUserByUserId" resultType="User">
+        SELECT
+            USER_NO,
+            USER_ID,
+            PASSWORD,
+            REFRESH_TOKEN,
+            REMARK,
+            CREATE_DTM,
+            UPDATE_DTM
+        FROM
+            TBL_USER
+        WHERE
+            USER_ID = #{ userId }
+    </select>
+
+    <insert id="saveUserInfo" parameterType="User">
+        INSERT
+        INTO TBL_USER (
+            USER_ID,
+            PASSWORD,
+            REMARK,
+            CREATE_DTM,
+            UPDATE_DTM
+        ) VALUES (
+             #{ userId },
+             #{ password },
+             #{ remark },
+             NOW(),
+             NOW()
+         )
+    </insert>
+</mapper>
