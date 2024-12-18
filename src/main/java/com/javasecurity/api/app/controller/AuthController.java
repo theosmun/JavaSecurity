@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/auth")
@@ -18,15 +19,17 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public Response<String> register(@RequestBody User user){
-        authService.register(user);
+    public Response<String> register(@RequestBody User userinfo){
+        authService.register(userinfo);
         return new Response<String>().setPayload("SUCCESS");
     }
 
-    @PostMapping("/login")
-    public Response<LoginInfo> login(@RequestBody LoginSearch search) {
-        LoginInfo loginInfo = authService.login(search);
-        return new Response<LoginInfo>().setPayload(loginInfo);
-    }
+//    @PostMapping("/login")
+//    public Response<LoginInfo> login(@RequestBody LoginSearch search) {
+//        LoginInfo loginInfo = authService.login(search);
+//        return new Response<LoginInfo>().setPayload(loginInfo);
+//    }
+
+
 
 }

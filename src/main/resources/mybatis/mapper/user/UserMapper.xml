@@ -4,6 +4,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.javasecurity.api.app.mapper.UserMapper">
+    <select id="getUserList" resultType="User">
+        SELECT
+            USER_NO,
+            USER_ID,
+            PASSWORD,
+            REFRESH_TOKEN,
+            REMARK,
+            CREATE_DTM,
+            UPDATE_DTM
+        FROM
+            TBL_USER
+    </select>
+
     <select id="getUserByUserId" resultType="User">
         SELECT
             USER_NO,
@@ -28,11 +41,17 @@
             CREATE_DTM,
             UPDATE_DTM
         ) VALUES (
-             #{ userId },
-             #{ password },
-             #{ remark },
-             NOW(),
-             NOW()
-         )
+                     #{ userId },
+                     #{ password },
+                     #{ remark },
+                     NOW(),
+                     NOW()
+                 )
+            ON DUPLICATE KEY UPDATE
+                                 PASSWORD = #{ password },
+                                 REFRESH_TOKEN = #{ refreshToken },
+                                 REMARK = #{ remark },
+                                 UPDATE_DTM = NOW()
+        ;
     </insert>
 </mapper>
