@@ -15,24 +15,36 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
-    //private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    // JWT 인증 필터를 필드 선언
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // CSRF 보호를 비활성화. (REST API의 경우 보통 Stateless이므로 CSRF를 사용하지 않음)
         http.csrf(AbstractHttpConfigurer::disable)
+                // 요청 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
+                        // "/api/auth/**" 경로는 모든 사용자에게 허용
                         .requestMatchers("/api/auth/**").permitAll()
+                        // 그 외의 모든 요청은 인증 필요
                         .anyRequest().authenticated()
-                );
-               //.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                )
+                // JWT 인증 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
+               .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        // 설정을 마친 SecurityFilterChain을 반환
         return http.build();
     }
 
+    // BCryptPasswordEncoder를 Bean으로 등록
     @Bean
-    public PasswordEncoder passwordEncoder() {return new BCryptPasswordEncoder();}
+    public PasswordEncoder passwordEncoder() {
+        // 비밀번호 암호화 및 검증을 위한 BCryptPasswordEncoder 인스턴스 생성
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public AuthenticationManager authenticationManager( AuthenticationConfiguration configuration) throws Exception {
-       return configuration.getAuthenticationManager();
+        // AuthenticationManager를 AuthenticationConfiguration에서 가져와 Bean으로 등록
+        return configuration.getAuthenticationManager();
     }
 }

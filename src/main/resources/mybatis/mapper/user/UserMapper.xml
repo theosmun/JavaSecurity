@@ -33,8 +33,7 @@
     </select>
 
     <insert id="saveUserInfo" parameterType="User">
-        INSERT
-        INTO TBL_USER (
+        INSERT INTO TBL_USER (
             USER_ID,
             PASSWORD,
             REMARK,
@@ -47,11 +46,12 @@
                      NOW(),
                      NOW()
                  )
-            ON DUPLICATE KEY UPDATE
-                                 PASSWORD = #{ password },
-                                 REFRESH_TOKEN = #{ refreshToken },
-                                 REMARK = #{ remark },
-                                 UPDATE_DTM = NOW()
+            ON CONFLICT (USER_NO) -- 중복 키를 체크할 열 지정
+            DO UPDATE SET
+            PASSWORD = EXCLUDED.PASSWORD,  -- 새로운 값으로 업데이트
+                   REFRESH_TOKEN = #{ refreshToken },
+                   REMARK = EXCLUDED.REMARK,
+                   UPDATE_DTM = NOW()
         ;
     </insert>
 </mapper>
